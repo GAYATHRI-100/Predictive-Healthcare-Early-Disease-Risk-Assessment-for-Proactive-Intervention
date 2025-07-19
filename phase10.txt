@@ -1,0 +1,5 @@
+{
+  "prediction": 1,
+  "risk_status": "High Risk",
+  "probability_of_disease": 0.8765
+}

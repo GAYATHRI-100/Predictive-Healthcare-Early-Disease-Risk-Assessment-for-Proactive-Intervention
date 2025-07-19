@@ -1,0 +1,112 @@
+Data Preprocessing and Exploratory Data Analysis (EDA)
+This is arguably the most crucial phase, especially with healthcare data which can be messy.
+
+Data Cleaning:
+
+Procedure: Handle missing values (imputation, removal), correct inconsistencies, remove duplicates. For medical data, understand why data might be missing (e.g., test not performed).
+
+Tools: pandas, numpy.
+
+Techniques: Mean/median/mode imputation, K-Nearest Neighbors (KNN) imputation, dropping rows/columns.
+
+Exploratory Data Analysis (EDA):
+
+Procedure: Understand the data's structure, distributions, relationships between variables, and identify outliers. Visualize key features and their correlation with the target variable (disease presence). This step helps in feature selection and engineering.
+
+Tools: matplotlib, seaborn, pandas (for describe(), value_counts(), corr()).
+
+Techniques: Histograms, box plots, scatter plots, correlation matrices, count plots.
+PYTHON:
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Example: Handling missing values (simple imputation)
+# Check for missing values
+print("\nMissing values before handling:")
+print(df.isnull().sum())
+
+# Example: Impute missing numerical values with median
+for col in df.select_dtypes(include=np.number).columns:
+    if df[col].isnull().any():
+        df[col].fillna(df[col].median(), inplace=True)
+
+# Example: Visualize distribution of a numerical feature
+plt.figure(figsize=(8, 5))
+sns.histplot(df['age'], kde=True)
+plt.title('Distribution of Age')
+plt.show()
+
+# Example: Correlation matrix (for numerical features)
+plt.figure(figsize=(12, 10))
+sns.heatmap(df.corr(numeric_only=True), annot=True, cmap='coolwarm', fmt=".2f")
+plt.title('Correlation Matrix of Features')
+plt.show()
+Output
+Missing values before handling:
+age               0
+sex               0
+cp                0
+trestbps          0
+chol              0
+fbs               0
+restecg           0
+thalach           0
+exang             0
+oldpeak           0
+slope             0
+ca                0
+thal              0
+target_disease    0
+dtype: int64
+
+
+# Example: Relationship between a categorical feature and target
+sns.countplot(x='sex', hue='target_disease', data=df) # 'target_disease' is our assumed target column
+plt.title('Heart Disease cases by Sex')
+plt.show()
+Feature Engineering:
+
+Procedure: Create new features from existing ones that might have more predictive power.
+
+Example: Combine 'height' and 'weight' to 'BMI'.
+
+Example: Create 'age_group' from 'age'.
+
+Tools: pandas.
+
+Feature Scaling & Encoding:
+
+Procedure:
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+
+# Identify numerical and categorical features
+numerical_features = df.select_dtypes(include=np.number).columns.tolist()
+# Remove the target column from numerical features
+if 'target_disease' in numerical_features:
+    numerical_features.remove('target_disease')
+
+categorical_features = df.select_dtypes(include='object').columns.tolist()
+
+# Create preprocessing pipelines for numerical and categorical features
+numerical_transformer = StandardScaler() # Or MinMaxScaler()
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+
+# Create a preprocessor using ColumnTransformer
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numerical_transformer, numerical_features),
+        ('cat', categorical_transformer, categorical_features)
+    ])
+
+# Separate features (X) and target (y)
+X = df.drop('target_disease', axis=1) # Replace 'target_disease' with your actual target column name
+y = df['target_disease']
+
+Scaling: Normalize/Standardize numerical features (e.g., MinMaxScaler, StandardScaler). This is crucial for distance-based algorithms (KNN, SVM) and gradient-descent-based algorithms (Logistic Regression, Neural Networks).
+
+Encoding: Convert categorical features into numerical representations (e.g., OneHotEncoder for nominal, LabelEncoder for ordinal).
+
+Tools: sklearn.preprocessing.

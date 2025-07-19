@@ -1,0 +1,7 @@
+import joblib
+
+# ... (best_rf_model from previous snippet)
+
+# Save the best performing model (e.g., best_rf_model from GridSearchCV)
+joblib.dump(best_rf_model, 'heart_disease_risk_model.pkl')
+print("Model saved as 'heart_disease_risk_model.pkl'")

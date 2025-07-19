@@ -1,0 +1,44 @@
+
+
+# Evaluate Logistic Regression
+y_pred_lr = pipeline_lr.predict(X_test)
+y_proba_lr = pipeline_lr.predict_proba(X_test)[:, 1] # Probability of positive class
+
+print("\n--- Logistic Regression Evaluation ---")
+print(classification_report(y_test, y_pred_lr))
+print(f"ROC AUC Score: {roc_auc_score(y_test, y_proba_lr):.4f}")
+
+cm_lr = confusion_matrix(y_test, y_pred_lr)
+disp_lr = ConfusionMatrixDisplay(confusion_matrix=cm_lr, display_labels=pipeline_lr.classes_)
+disp_lr.plot()
+plt.title('Confusion Matrix - Logistic Regression')
+plt.show()
+
+# Evaluate Random Forest
+y_pred_rf = pipeline_rf.predict(X_test)
+y_proba_rf = pipeline_rf.predict_proba(X_test)[:, 1]
+
+print("\n--- Random Forest Evaluation ---")
+print(classification_report(y_test, y_pred_rf))
+print(f"ROC AUC Score: {roc_auc_score(y_test, y_proba_rf):.4f}")
+
+cm_rf = confusion_matrix(y_test, y_pred_rf)
+disp_rf = ConfusionMatrixDisplay(confusion_matrix=cm_rf, display_labels=pipeline_rf.classes_)
+disp_rf.plot()
+plt.title('Confusion Matrix - Random Forest')
+plt.show()
+
+# Plot ROC curves for comparison
+fpr_lr, tpr_lr, _ = roc_curve(y_test, y_proba_lr)
+fpr_rf, tpr_rf, _ = roc_curve(y_test, y_proba_rf)
+
+plt.figure(figsize=(8, 6))
+plt.plot(fpr_lr, tpr_lr, label=f'Logistic Regression (AUC = {roc_auc_score(y_test, y_proba_lr):.2f})')
+plt.plot(fpr_rf, tpr_rf, label=f'Random Forest (AUC = {roc_auc_score(y_test, y_proba_rf):.2f})')
+plt.plot([0, 1], [0, 1], 'k--', label='Random Classifier')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve Comparison')
+plt.legend()
+plt.grid(True)
+plt.show()

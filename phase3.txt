@@ -1,0 +1,59 @@
+Model Training and Evaluation
+Data Splitting:
+
+Procedure: Split the preprocessed dataset into training and testing sets (e.g., 70-80% for training, 20-30% for testing). This ensures the model is evaluated on unseen data.
+
+Tools: sklearn.model_selection.train_test_split.
+
+Code Snippet:
+
+Python
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+# stratify=y is important for classification to maintain class proportions in splits
+Model Selection:
+
+Procedure: Choose appropriate machine learning algorithms for classification.
+
+Common Algorithms for Disease Prediction:
+
+Logistic Regression: Good baseline, interpretable.
+
+Support Vector Machines (SVM): Effective in high-dimensional spaces.
+
+Decision Trees / Random Forests: Handle non-linearity, provide feature importance.
+
+Gradient Boosting (XGBoost, LightGBM): Often achieve high accuracy.
+
+K-Nearest Neighbors (KNN): Simple, instance-based.
+
+Neural Networks (MLPClassifier): For potentially complex patterns, especially with larger datasets.
+
+Tools: sklearn.linear_model, sklearn.svm, sklearn.ensemble, sklearn.neighbors, sklearn.neural_network, xgboost, lightgbm.
+
+Model Training:
+
+Procedure: Train the selected model(s) on the training data.
+
+Tools: Scikit-learn estimator .fit() method.
+Code:
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import classification_report, roc_auc_score, roc_curve, confusion_matrix, ConfusionMatrixDisplay
+
+# Create a pipeline that includes preprocessing and the model
+# This ensures consistency between training and prediction
+pipeline_lr = Pipeline(steps=[('preprocessor', preprocessor),
+                              ('classifier', LogisticRegression(random_state=42))])
+
+pipeline_rf = Pipeline(steps=[('preprocessor', preprocessor),
+                              ('classifier', RandomForestClassifier(random_state=42))])
+
+print("Training Logistic Regression...")
+pipeline_lr.fit(X_train, y_train)
+
+print("Training Random Forest...")
+pipeline_rf.fit(X_train, y_train)

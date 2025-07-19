@@ -1,0 +1,28 @@
+from sklearn.model_selection import GridSearchCV
+
+# ... (pipelines defined from previous snippet)
+
+# Define parameter grid for Random Forest (example)
+param_grid_rf = {
+    'classifier__n_estimators': [100, 200, 300],
+    'classifier__max_depth': [5, 10, None],
+    'classifier__min_samples_split': [2, 5],
+}
+
+# Create GridSearchCV object
+grid_search_rf = GridSearchCV(pipeline_rf, param_grid_rf, cv=5, scoring='roc_auc', n_jobs=-1, verbose=1)
+
+print("\nPerforming Grid Search for Random Forest...")
+grid_search_rf.fit(X_train, y_train)
+
+print(f"Best parameters for Random Forest: {grid_search_rf.best_params_}")
+print(f"Best ROC AUC score for Random Forest: {grid_search_rf.best_score_:.4f}")
+
+# Use the best model for final evaluation
+best_rf_model = grid_search_rf.best_estimator_
+y_pred_best_rf = best_rf_model.predict(X_test)
+y_proba_best_rf = best_rf_model.predict_proba(X_test)[:, 1]
+
+print("\n--- Best Random Forest Model Evaluation ---")
+print(classification_report(y_test, y_pred_best_rf))
+print(f"ROC AUC Score: {roc_auc_score(y_test, y_proba_best_rf):.4f}")
